@@ -14,8 +14,17 @@ class Game
 		@hanger_player = Hanger.new(hanger_name)
 	end
 
-	def EnterLetter
-		#ask for new letter
+	def Solve
+
+	end
+
+	def ShowBoard
+		puts "***#{@guesser_player.name} trying to guess #{@hanger_player.name}'s word ***"
+		puts "Attempts left: #{@attempts_left}"
+		@showing_word.each do |letter|
+			print "#{letter} "
+		end
+		print "\n"
 	end
 
 	def CheckLetter
@@ -32,7 +41,7 @@ class Game
 
 	def EnterWordToBeGuessed
 		@guessing_word = @hanger_player.SetWord
-		SetWordToGuess
+		SetWordToGuess()
 	end
 
 	def SetWordToGuess
@@ -41,6 +50,18 @@ class Game
 		end
 	end
 
+	def WhatToDo()
+		puts "So #{@guesser_player.name}, what you wanna do?\n 1.- Enter a letter \n 2.- Solve word"
+		option = gets.chomp
+		if option == 1 
+			CheckLetter(@guesser_player.Guess)
+		elsif option == 2
+			Solve()
+		end
+			
+	end
+
+
 end
 
 require_relative "player.rb"
@@ -48,3 +69,4 @@ require_relative "player.rb"
 mygame = Game.new
 mygame.StartGame
 mygame.EnterWordToBeGuessed
+mygame.ShowBoard
