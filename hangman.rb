@@ -1,4 +1,5 @@
 class Game
+	attr_reader :attempts_left
 	def initialize
 		@attempts_left = 6
 		@guessing_word = []
@@ -15,7 +16,10 @@ class Game
 	end
 
 	def Solve
-
+		puts "Enter solution:"
+		solution = gets.chomp
+		solution.upcase!
+		CheckWinner(solution)
 	end
 
 	def ShowBoard
@@ -27,16 +31,41 @@ class Game
 		print "\n"
 	end
 
-	def CheckLetter
-		#check if entered letter is on word to be guessed
+	def CheckLetter(letter)
+		puts letter
+		found = false
+		@guessing_word.each_with_index do |word, index|
+			if word == letter
+				@showing_word[index] = letter
+				found = true
+			end
+		end
+		if !found 
+			AttemptsLeft()
+		else
+			CheckWinner()
+		end
+	end
+
+	def CheckWinner (answer = ".")
+		if answer == "." && @guessing_word.join == @showing_word.join
+				GameOver(@guesser_player)
+		elsif answer == @guessing_word.join
+				GameOver(@guesser_player)
+		else
+				puts "Wrong answer #{@guesser_player.name}! Keep trying!"
+		end
 	end
 
 	def AttemptsLeft
-		#calculate attempts left
+		@attempts_left -= 1
+		GameOver(@hanger_player) if @attempts_left == 0
 	end
 
-	def GameOver
-		#end game, show winner
+	def GameOver(winner)
+		@attempts_left = 0
+		puts "#{winner.name} WINS!"
+		puts "#{@guessing_word.join} was the answer!"
 	end
 
 	def EnterWordToBeGuessed
@@ -51,16 +80,17 @@ class Game
 	end
 
 	def WhatToDo()
+		puts "\e[H\e[2J" #clears screen
+		ShowBoard()
 		puts "So #{@guesser_player.name}, what you wanna do?\n 1.- Enter a letter \n 2.- Solve word"
 		option = gets.chomp
-		if option == 1 
+		if option == "1" 
 			CheckLetter(@guesser_player.Guess)
-		elsif option == 2
+		elsif option == "2"
 			Solve()
 		end
 			
 	end
-
 
 end
 
@@ -69,4 +99,6 @@ require_relative "player.rb"
 mygame = Game.new
 mygame.StartGame
 mygame.EnterWordToBeGuessed
-mygame.ShowBoard
+while mygame.attempts_left != 0 
+	mygame.WhatToDo
+end
