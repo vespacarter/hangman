@@ -12,7 +12,11 @@ class Game
 		@guesser_player = Guesser.new(guesser_name)
 		puts "Enter Hanger name:"
 		hanger_name = gets.chomp
-		@hanger_player = Hanger.new(hanger_name)
+		if hanger_name == "computer"
+			@hanger_player = Computer.new(hanger_name,"animals.txt")
+		else
+			@hanger_player = Hanger.new(hanger_name)
+		end
 	end
 
 	def Solve
@@ -32,7 +36,6 @@ class Game
 	end
 
 	def CheckLetter(letter)
-		puts letter
 		found = false
 		@guessing_word.each_with_index do |word, index|
 			if word == letter
@@ -70,6 +73,7 @@ class Game
 
 	def EnterWordToBeGuessed
 		@guessing_word = @hanger_player.SetWord
+		puts "guessing_word #{@guessing_word}"
 		SetWordToGuess()
 	end
 
